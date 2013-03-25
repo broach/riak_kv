@@ -1038,9 +1038,10 @@ handle_common_error(Reason, RD, Ctx) ->
         {error, {deleted, _VClock}} ->
             {{halt, 404},
                 wrq:set_resp_header("Content-Type", "text/plain",
-                    wrq:append_to_response_body(
-                        io_lib:format("not found~n",[]),
-                        encode_vclock_header(RD, Ctx))),
+                    wrq:set_resp_header(?HEAD_DELETED, "true",
+                        wrq:append_to_response_body(
+                            io_lib:format("not found~n",[]),
+                            encode_vclock_header(RD, Ctx)))),
                 Ctx};
         {error, {n_val_violation, N}} ->
             Msg = io_lib:format("Specified w/dw/pw values invalid for bucket"
