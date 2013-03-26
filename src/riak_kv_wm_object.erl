@@ -704,7 +704,16 @@ multiple_choices(RD, Ctx=#ctx{vtag=undefined, doc={ok, Doc}}) ->
     end;
 multiple_choices(RD, Ctx) ->
     %% specific vtag was specified
-    {false, RD, Ctx}.
+    %% if it's a tombstone add the X-Riak-Deleted header 
+    {ok, Doc} = Ctx#ctx.doc,
+    case riak_kv_util:is_x_deleted(Doc) of
+        true ->
+            {false,
+                wrq:set_resp_header(?HEAD_DELETED, "true", RD),
+                Ctx};
+        false ->
+            {false, RD, Ctx}
+    end.
 
 %% @spec produce_doc_body(reqdata(), context()) -> {binary(), reqdata(), context()}
 %% @doc Extract the value of the document, and place it in the
