@@ -434,7 +434,7 @@ extract_index_fields(RD) ->
                         %% where the tokens can be quoted strings. We
                         %% don't currently support quoted strings.
                         %% (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)
-                        Values = re:split(V, RE, [{return, binary}]),
+                        Values = re:split(V2, RE, [{return, binary}]),
                         [{IndexField, X} || X <- Values] ++ Acc;
                     false ->
                         Acc
