@@ -776,7 +776,10 @@ produce_doc_body(RD, Ctx) ->
                           {ok, IndexMeta} ->
                               lists:foldl(fun({K,V}, Acc) ->
                                                   K1 = riak_kv_wm_utils:any_to_list(K),
-                                                  K2 = [mochiweb_util:quote(X) || X <- K1],
+                                                  K2 = lists:flatmap(fun(E) ->
+                                                                         mochiweb_util:quote(E)
+                                                                     end,
+                                                                     K1), 
                                                   V1 = riak_kv_wm_utils:any_to_list(V),
                                                   wrq:merge_resp_headers([{?HEAD_INDEX_PREFIX ++ K2, V1}], Acc)
                                           end,
