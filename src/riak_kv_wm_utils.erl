@@ -139,7 +139,7 @@ multipart_encode_body(Prefix, Bucket, {MD, V}, APIVersion) ->
      end,
      case dict:find(?MD_INDEX, MD) of
          {ok, IF} ->
-             [[?HEAD_INDEX_PREFIX,mochiweb_util:quote(Key),": ",any_to_list(mochiweb:util:quote(Val)),"\r\n"] || {Key,Val} <- IF];
+             [[?HEAD_INDEX_PREFIX,mochiweb_util:quote(Key),": ",any_to_list(mochiweb_util:quote(Val)),"\r\n"] || {Key,Val} <- IF];
          error -> []
      end,
      "\r\n",
