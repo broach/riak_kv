@@ -775,8 +775,8 @@ produce_doc_body(RD, Ctx) ->
             IndexRD = case dict:find(?MD_INDEX, MD) of
                           {ok, IndexMeta} ->
                               lists:foldl(fun({K,V}, Acc) ->
-                                                  K1 = mochiweb_util:quote(K),
-                                                  K2 = riak_kv_wm_utils:any_to_list(K1),
+                                                  K1 = riak_kv_wm_utils:any_to_list(K),
+                                                  K2 = [mochiweb_util:quote(X) || X <- K1],
                                                   V1 = riak_kv_wm_utils:any_to_list(V),
                                                   wrq:merge_resp_headers([{?HEAD_INDEX_PREFIX ++ K2, V1}], Acc)
                                           end,
