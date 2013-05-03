@@ -778,7 +778,7 @@ produce_doc_body(RD, Ctx) ->
                                                   K1 = mochiweb_util:quote(K),
                                                   K2 = riak_kv_wm_utils:any_to_list(K1),
                                                   V1 = riak_kv_wm_utils:any_to_list(V),
-                                                  wrq:merge_resp_headers([{?HEAD_INDEX_PREFIX ++ K21, V1}], Acc)
+                                                  wrq:merge_resp_headers([{?HEAD_INDEX_PREFIX ++ K2, V1}], Acc)
                                           end,
                                           UserMetaRD, IndexMeta);
                           error -> UserMetaRD
