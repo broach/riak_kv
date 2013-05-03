@@ -421,7 +421,9 @@ extract_index_fields(RD) ->
     PrefixSize = length(?HEAD_INDEX_PREFIX),
     {ok, RE} = re:compile(",\\s"),
     F = fun({K,V}, Acc) ->
-                KList = riak_kv_wm_utils:any_to_list(K),
+                %% URL-decode both the header field-name and value
+                V2 = mochiweb_util:unquote(V),
+                KList = riak_kv_wm_utils:any_to_list(mochiweb_util:unquote(K)),
                 case lists:prefix(?HEAD_INDEX_PREFIX, string:to_lower(KList)) of
                     true ->
                         %% Isolate the name of the index field.
@@ -773,8 +775,8 @@ produce_doc_body(RD, Ctx) ->
             IndexRD = case dict:find(?MD_INDEX, MD) of
                           {ok, IndexMeta} ->
                               lists:foldl(fun({K,V}, Acc) ->
-                                                  K1 = riak_kv_wm_utils:any_to_list(K),
-                                                  V1 = riak_kv_wm_utils:any_to_list(V),
+                                                  K1 = riak_kv_wm_utils:any_to_list(mochiweb_util:quote(K)),
+                                                  V1 = riak_kv_wm_utils:any_to_list(mochiweb_util:quote(V)),
                                                   wrq:merge_resp_headers([{?HEAD_INDEX_PREFIX ++ K1, V1}], Acc)
                                           end,
                                           UserMetaRD, IndexMeta);
