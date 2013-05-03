@@ -774,16 +774,16 @@ produce_doc_body(RD, Ctx) ->
             %% Add index metadata to response...
             IndexRD = case dict:find(?MD_INDEX, MD) of
                           {ok, IndexMeta} ->
+                              IndexMeta2 = lists:flatmap(fun(E) ->
+                                                     mochiweb_util:quote(E)
+                                                 end,
+                                                 IndexMeta), 
                               lists:foldl(fun({K,V}, Acc) ->
                                                   K1 = riak_kv_wm_utils:any_to_list(K),
-                                                  K2 = lists:flatmap(fun(E) ->
-                                                                         mochiweb_util:quote(E)
-                                                                     end,
-                                                                     K1), 
                                                   V1 = riak_kv_wm_utils:any_to_list(V),
-                                                  wrq:merge_resp_headers([{?HEAD_INDEX_PREFIX ++ K2, V1}], Acc)
+                                                  wrq:merge_resp_headers([{?HEAD_INDEX_PREFIX ++ K1, V1}], Acc)
                                           end,
-                                          UserMetaRD, IndexMeta);
+                                          UserMetaRD, IndexMeta2);
                           error -> UserMetaRD
                       end,
             {riak_kv_wm_utils:encode_value(Doc), encode_vclock_header(IndexRD, Ctx), Ctx};
